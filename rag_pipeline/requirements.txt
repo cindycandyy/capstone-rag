@@ -1,0 +1,25 @@
+# ========================================
+# Agentic RAG Pipeline - Requirements
+# Disinformation / Hate Speech Detection (Bahasa Indonesia)
+# ========================================
+
+# --- Vector Database ---
+chromadb>=0.5.0
+
+# --- Embedding Models ---
+openai>=1.30.0                        # text-embedding-3-large
+sentence-transformers>=3.0.0          # LaBSE & multilingual-e5-large
+torch>=2.2.0                          # Required by sentence-transformers
+
+# --- LLM Generation ---
+anthropic>=0.28.0                     # Claude via Anthropic SDK
+
+# --- Utility ---
+python-dotenv>=1.0.0                  # Load .env variables
+numpy>=1.26.0                         # Cosine similarity, array ops
+scikit-learn>=1.4.0                   # Cosine similarity helper
+tiktoken>=0.7.0                       # Token counting for chunking
+
+# --- Benchmarking & Reporting ---
+tqdm>=4.66.0                          # Progress bars for benchmarks
+tabulate>=0.9.0                       # Pretty-print comparison tables
