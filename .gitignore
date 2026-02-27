@@ -131,6 +131,7 @@ env.bak/
 venv.bak/
 rag_pipeline/venv/
 rag_pipeline/venv311/
+rag_pipeline/docs/venv311/
 
 # Spyder project settings
 .spyderproject

@@ -1,25 +1,32 @@
 # ========================================
 # Agentic RAG Pipeline - Requirements
 # Disinformation / Hate Speech Detection (Bahasa Indonesia)
+# Tested on Python 3.11 (venv311)
 # ========================================
 
 # --- Vector Database ---
-chromadb>=0.5.0
+chromadb>=1.5.1
 
 # --- Embedding Models ---
-openai>=1.30.0                        # text-embedding-3-large
-sentence-transformers>=3.0.0          # LaBSE & multilingual-e5-large
+sentence-transformers>=5.0.0          # LaBSE & multilingual-e5-large
 torch>=2.2.0                          # Required by sentence-transformers
 
-# --- LLM Generation ---
-anthropic>=0.28.0                     # Claude via Anthropic SDK
+# --- LLM Generation (pilih provider via LLM_PROVIDER di .env) ---
+langchain>=1.0.0                      # LangChain orchestration
+langchain-core>=1.0.0                 # LangChain messages & base classes
+langchain-groq>=1.1.0                 # Groq (GRATIS) — llama-3.3-70b
+langchain-huggingface>=1.0.0          # HuggingFace Inference API (GRATIS)
+langchain-anthropic>=1.0.0            # Anthropic Claude (berbayar)
+langchain-openai>=1.0.0               # OpenAI GPT-4o (berbayar)
+anthropic>=0.80.0                     # Anthropic SDK
+openai>=2.0.0                         # OpenAI SDK (juga untuk embedding)
 
 # --- Utility ---
 python-dotenv>=1.0.0                  # Load .env variables
-numpy>=1.26.0                         # Cosine similarity, array ops
+numpy>=2.0.0                          # Array ops
 scikit-learn>=1.4.0                   # Cosine similarity helper
 tiktoken>=0.7.0                       # Token counting for chunking
 
 # --- Benchmarking & Reporting ---
-tqdm>=4.66.0                          # Progress bars for benchmarks
-tabulate>=0.9.0                       # Pretty-print comparison tables
+tqdm>=4.66.0                          # Progress bars
+tabulate>=0.9.0                       # Pretty-print tables

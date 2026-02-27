@@ -3,11 +3,15 @@ generator.py
 ------------
 Memanggil LLM dan mengembalikan analisis terstruktur.
 
-Mendukung dua provider:
-  - Anthropic Claude (default, jika ANTHROPIC_API_KEY valid dan punya kredit)
-  - OpenAI GPT-4o   (fallback, jika LLM_PROVIDER=openai di .env)
+Mendukung empat provider:
+  - Groq         (GRATIS, cepat — gunakan untuk testing/development)
+  - HuggingFace  (GRATIS, via Inference API)
+  - Anthropic Claude (berbayar)
+  - OpenAI GPT-4o    (berbayar)
 
 Atur via .env:
+    LLM_PROVIDER=groq        → gunakan Groq (llama-3.3-70b, GRATIS)
+    LLM_PROVIDER=huggingface → gunakan HuggingFace Inference API
     LLM_PROVIDER=anthropic   → gunakan Claude
     LLM_PROVIDER=openai      → gunakan OpenAI GPT-4o
 """
@@ -21,12 +25,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-LLM_PROVIDER        = os.getenv("LLM_PROVIDER", "anthropic").lower()
+LLM_PROVIDER        = os.getenv("LLM_PROVIDER", "groq").lower()
 CLAUDE_MODEL        = os.getenv("CLAUDE_MODEL", "claude-3-5-sonnet-20241022")
 OPENAI_MODEL        = os.getenv("OPENAI_MODEL", "gpt-4o")
+GROQ_MODEL          = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 HUGGINGFACE_MODEL   = os.getenv("HUGGINGFACE_MODEL", "meta-llama/Llama-3.2-3B-Instruct")
 ANTHROPIC_API_KEY   = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY      = os.getenv("OPENAI_API_KEY", "")
+GROQ_API_KEY        = os.getenv("GROQ_API_KEY", "")
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY", "")
 
 
@@ -99,14 +105,27 @@ class Generator:
         self.provider = (provider or LLM_PROVIDER).lower()
         self._client = None
 
-        if self.provider == "anthropic":
+        if self.provider == "groq":
+            self._init_groq()
+        elif self.provider == "anthropic":
             self._init_anthropic()
         elif self.provider == "openai":
             self._init_openai()
         elif self.provider == "huggingface":
             self._init_huggingface()
         else:
-            raise ValueError(f"Provider tidak dikenal: '{self.provider}'. Pilih: anthropic, openai, huggingface")
+            raise ValueError(f"Provider tidak dikenal: '{self.provider}'. Pilih: groq, anthropic, openai, huggingface")
+
+    def _init_groq(self):
+        if not GROQ_API_KEY:
+            raise EnvironmentError(
+                "GROQ_API_KEY tidak ditemukan di .env\n"
+                "Daftar gratis di: https://console.groq.com → API Keys"
+            )
+        from langchain_groq import ChatGroq
+        self._llm = ChatGroq(api_key=GROQ_API_KEY, model=GROQ_MODEL)
+        self.model = GROQ_MODEL
+        print(f"[Generator] Provider: Groq (GRATIS) | Model: {self.model}")
 
     def _init_anthropic(self):
         if not ANTHROPIC_API_KEY:
